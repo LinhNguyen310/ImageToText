@@ -9,7 +9,10 @@ import { BrowserRouter as Router } from 'react-router-dom';
 function App() {
   useEffect(() => {
     // Redirect to '/login' on component mount
-    window.location.pathname !== '/login' && (window.location.href = '/login');
+    if (window.location.pathname == '/') {
+      window.location.href = '/login';
+      window.location.reload();
+    }
   }, []);
 
   return (
