@@ -12,7 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate, Link } from 'react-router-dom'; // Updated import
-
+import Anchor from '../components/anchor';
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -62,7 +62,21 @@ export default function Login() {
             backgroundPosition: 'center',
           }}
         />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <Grid
+          item
+          xs={12}
+          sm={8}
+          md={5}
+          component={Paper}
+          elevation={6}
+          square
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center', // Center vertically
+          }}
+        >
           <Box
             sx={{
               my: 8,
@@ -103,9 +117,22 @@ export default function Login() {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                Sign In
-              </Button>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    mt: 3,
+                    mb: 2,
+                    backgroundColor: '#333',
+                    color: '#fff',
+                    '&:hover': {
+                      backgroundColor: '#2ecc71',
+                    },
+                  }}
+                >
+                  Sign In
+                </Button>
               <Grid container>
                 <Grid item xs>
                   <Link href="#" variant="body2">
@@ -120,6 +147,16 @@ export default function Login() {
               </Grid>
               <Copyright sx={{ mt: 5 }} />
             </Box>
+          </Box>
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 0,
+              width: '100%',
+              textAlign: 'center',
+            }}
+          >
+            <Anchor linkName="Continue as guest" />
           </Box>
         </Grid>
       </Grid>
