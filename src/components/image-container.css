@@ -1,0 +1,12 @@
+/* Add or update the following styles in your CSS file */
+
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .image-container img {
+    max-width: 100px; /* Set the desired maximum width for each image */
+    margin: 5px; /* Add margin between images */
+  }
+  

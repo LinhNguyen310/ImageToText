@@ -1,9 +1,13 @@
-// Home.js
 
 import React from 'react';
-
+import { Layout as DashboardLayout } from '../layouts/dashboard/layout';
+import FileUpload from '../components/upload-file';
+import ResponsiveAppBar from '../layouts/dashboard/nav-bar';
 const Dashboard = () => {
-  return <h2>Home Page</h2>;
+  return  <div>
+    <ResponsiveAppBar />
+    <FileUpload />
+  </div> ;
 };
 
 export default Dashboard;
