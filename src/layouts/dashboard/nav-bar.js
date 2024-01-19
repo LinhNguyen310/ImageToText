@@ -5,7 +5,6 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
@@ -15,19 +14,13 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
+// ... (previous imports)
+
 function ResponsiveAppBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
@@ -35,39 +28,37 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'transparent' }}>
+    <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
       <Box
         sx={{
-          borderBottom: '1px solid #ccc', // Add a thin line at the bottom
-          paddingBottom: '10px', // Add padding at the bottom for separation
+          paddingBottom: '10px',
         }}
       >
         <Toolbar
           disableGutters
           sx={{
-            width: '100%', // Set width to 100%
-            paddingLeft: '16px', // Adjust left padding
-            paddingRight: '16px', // Adjust right padding
+            paddingLeft: '32px',
+            paddingRight: '32px',
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: 'space-between', // Align items at the start and end
-            borderBottom: '1px solid #ccc', // Add a thin line at the bottom
+            justifyContent: 'space-between',
+            alignItems: 'center', // Center items vertically
+            borderBottom: '1px solid #ccc',
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <AdbIcon sx={{ display: { xs: 'none', md: 'flex', color:'black'}, mr: 1 }} />
+            <AdbIcon sx={{ display: { xs: 'none', md: 'flex', color: 'black' }, mr: 1 }} />
             <Typography
               variant="h6"
               noWrap
               component="a"
-              href="#app-bar-with-responsive-menu"
               sx={{
                 mr: 2,
                 display: { xs: 'none', md: 'flex' },
                 fontFamily: 'monospace',
-                fontWeight: 'bold', // Set to 'bold' for thick text
+                fontWeight: 'bold',
                 letterSpacing: '.3rem',
-                color: 'black', // Set to 'black' for dark color
+                color: 'black',
                 textDecoration: 'none',
               }}
             >
@@ -75,18 +66,16 @@ function ResponsiveAppBar() {
             </Typography>
           </Box>
 
-
-          <Box>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Tooltip title="Open settings">
-              <Button variant="outlined" sx={{ mr: 2, fontWeight: 'bold' }}>Source Code</Button>
+              <Button variant="outlined" sx={{ mr: 2, fontWeight: 'bold' }}>
+                Source Code
+              </Button>
 
               <IconButton sx={{ p: 0, mr: 2, color: 'black' }}>
                 <NotificationsNoneIcon />
               </IconButton>
-              <Button
-                onClick={handleOpenUserMenu}
-                sx={{ p: 0, paddingRight: '16px' }}
-              >
+              <Button onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
               </Button>
             </Tooltip>
