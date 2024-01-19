@@ -94,6 +94,13 @@ const FileUpload = () => {
           onDrop={handleDrop}
           onClick={handleClickToSelect}
         >
+        <img
+          src="https://www.imagetotext.info/web_assets/frontend/img/icons/tool-box-image.svg"
+          alt="image-logo"
+          class="upload-section-img"
+          width="100"
+          height="100"
+        />
           <div className="drop-icon">
             <i className="fa-light fa-file-upload"></i>
           </div>
