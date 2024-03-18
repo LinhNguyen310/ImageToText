@@ -13,14 +13,15 @@ export default function InputFile() {
     saveAs(blob, "output.doc");
   };
   
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      const fileArray = Array.from(files);
-      fileArray.forEach(file => {
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      Array.from(event.target.files).forEach(file => {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setImages(prevImages => [...prevImages, reader.result as string]);
+          const imageUrl = reader.result as string;
+          if (!images.includes(imageUrl)) {
+            setImages(prevImages => [...prevImages, imageUrl]);
+          }
         };
         reader.readAsDataURL(file);
       });
@@ -28,43 +29,42 @@ export default function InputFile() {
   };
 
   const handleTranslate = async () => {
-    const imageUrl = 'gs://image_to_text111/test.png';
-    const response = await fetch('/api/translate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        requests: [
-          {
-            image: imageUrl,
-            features: [
-              {
-                type: "DOCUMENT_TEXT_DETECTION"
-              }
-            ],
-            imageContext: {
-              languageHints: ["en-t-i0-handwrit"]
-            }
-          },
-        ],
-      }),
-    });
-    console.log(response)
-    if (!response.ok) {
-      console.error('Failed to translate image');
-      return;
-    }
-    console.log('Response status:', response.status, response.statusText);
-    const data = await response.json();
-    setPreviewText(data.fullText.text);
+    console.log(images);
+    let combinedText = '';
 
-    console.log(data)
-  };
+const fetchPromises = images.map(async (imageUrl, index) => {
+  // Convert the data URL to a Blob
+  const response = await fetch(imageUrl);
+  const blob = await response.blob();
+  // Create a new File object
+  const file = new File([blob], `image${index}.jpg`, { type: 'image/jpeg' });
+  
+  // Create a FormData object
+  let formData = new FormData();
+
+  // Append the file to the FormData object
+  formData.append('file', file);
+  console.log(file.name)
+  formData.append('mimetype', file.type);
+  formData.append('filename', file.name);
+  const uploadResponse = await fetch('/api/upload', {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (uploadResponse.ok) {
+    console.log('Uploaded successfully!');
+  } else {
+    console.error('Upload failed.');
+  }
+});
+
+await Promise.all(fetchPromises);
+};
   return (
     <div className="grid w-full max-w-sm items-center gap-1.5">
       <Label htmlFor="picture">Picture</Label>
-      <Input id="picture" type="file" accept="image/*" onChange={handleImageChange} multiple />
+      <Input id="picture" type="file" accept="image/*" name="file" onChange={handleImageChange} multiple />
       {images.map((image, index) => (
         <img key={index} src={image} alt={`Selected ${index}`} />
       ))}
