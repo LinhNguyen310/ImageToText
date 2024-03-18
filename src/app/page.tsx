@@ -54,9 +54,34 @@ const fetchPromises = images.map(async (imageUrl, index) => {
 
   if (uploadResponse.ok) {
     console.log('Uploaded successfully!');
-  } else {
-    console.error('Upload failed.');
-  }
+    const responseJson = await uploadResponse.json();
+    console.log(responseJson);
+    const imageUrl = responseJson.imageUrl;   
+      // Call the translation API
+    const translateResponse = await fetch('/api/translate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ imageUrl }),
+    });
+    console.log(translateResponse);
+    if (translateResponse.ok) {
+      // Get the translation from the response
+      const responseJson = await translateResponse.json();
+
+      // Get the description from the first item in the text array
+      const description = responseJson.text[0].description;
+      console.log('Description:', description);
+    
+      // Add the description to previewText
+      setPreviewText(prevText => prevText + description + '\n');
+    } else {
+      console.error('Translation failed.');
+    }
+    } else {
+      console.error('Upload failed.');
+    }
 });
 
 await Promise.all(fetchPromises);

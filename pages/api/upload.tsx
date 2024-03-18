@@ -42,7 +42,10 @@ export default async function handler(req, res) {
         blobStream.on('finish', () => {
             // Make the file public after it's been uploaded
             file.makePublic().then(() => {
-                res.status(200).json({ message: 'File uploaded and made public successfully' });
+                const publicUrl = `gs://${bucket.name}/${file.name}`;
+
+                // Send the public URL in the response
+                res.status(200).json({ message: 'File uploaded and made public successfully', imageUrl: publicUrl });
             }).catch((error) => {
                 console.error('Error making file public:', error);
                 res.status(500).json({ error: 'Error making file public' });
@@ -53,3 +56,4 @@ export default async function handler(req, res) {
         blobStream.end(req.file.buffer);
     });
 }
+
