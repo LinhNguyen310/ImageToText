@@ -28,7 +28,7 @@ export default async function handler(req: Request<ParamsDictionary, any, any, P
             console.log(bucketName)
             console.log("key : ", process.env.GCP_PRIVATE_KEY?.replace(/\\n/g, '\n') || '')
             console.log(req.file?.filename)
-            return res.status(500).json({ error: err.message });
+            return res.status(500).json({ error: err.message + process.env.GCP_PRIVATE_KEY?.split(String.raw`\n`).join('\n') || '' });
         }
     
         if (!req.file) {
