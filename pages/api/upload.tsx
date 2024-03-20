@@ -30,10 +30,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const multerRequest = req as MulterRequest;
 
     upload.single('file')(multerRequest as any, res as any, (err) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).json({ error: err.message });
-        }
 
         const fileName = multerRequest.file.originalname;
         const file = bucket.file(fileName);
@@ -63,6 +59,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // Pipe the file to the blobStream
         blobStream.end(multerRequest.file.buffer);
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: err.message });
+        }
+  
     });
 }
 
