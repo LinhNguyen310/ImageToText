@@ -7,8 +7,6 @@ const client = new vision.ImageAnnotatorClient();
 export default async function(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
         try {
-            console.log("hello")
-
             if (req.body) {
                 const imageUrl = req.body // Change this line
                 const vision = require('@google-cloud/vision');
