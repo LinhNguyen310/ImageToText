@@ -1,7 +1,20 @@
+"use server";
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import fetch from 'node-fetch';
-
+import Cors from 'cors';
+import initMiddleware from '@/lib/init-middleware';
+// Initialize the cors middleware
+const cors = initMiddleware(
+    // You can read more about the available options here: https://github.com/expressjs/cors#configuration-options
+    Cors({
+      // Only allow requests with POST and OPTIONS
+      methods: ['POST', 'OPTIONS'],
+    })
+  )
 export default async function(req: NextApiRequest, res: NextApiResponse) {
+    await cors(req, res);
+
     if (req.method === 'POST') {
         try {
             if (req.body) {

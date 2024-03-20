@@ -1,19 +1,23 @@
+"use server";
+import Cors from 'cors';
 import multer from 'multer';
 import { Storage } from '@google-cloud/storage';
 import { NextApiRequest, NextApiResponse } from 'next';
-
+import initMiddleware from '@/lib/init-middleware';
 const upload = multer({ storage: multer.memoryStorage() });
 interface MulterRequest extends NextApiRequest {
     file: any; // or specify a more specific type
 }
-  
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
+const cors = initMiddleware(
+    // You can read more about the available options here: https://github.com/expressjs/cors#configuration-options
+    Cors({
+      // Only allow requests with GET, POST and OPTIONS
+      methods: ['GET', 'POST', 'OPTIONS'],
+    })
+  )
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    await cors(req, res);
+
     const gcs = new Storage({
         projectId: process.env.GCP_PROJECT_ID,
         credentials: {
