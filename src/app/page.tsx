@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Input } from "../../components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -22,16 +22,22 @@ export default function InputFile() {
   const [previewText, setPreviewText] = useState<string>('');
   const [imageData, setImageData] = useState([]);
   const fileInputRef = useRef(null);
+  const [hoverStates, setHoverStates] = useState([]);
 
+  useEffect(() => {
+    setHoverStates(new Array(imageData.length).fill(false));
+  }, [imageData]);
+  
   const handleDownload = () => {
     const blob = new Blob([previewText], {type: "text/plain;charset=utf-8"});
     saveAs(blob, "output.doc");
   };
-  const handleDragOver = (event) => {
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
   
-  const handleDragEnter = (event) => {
+  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
   
@@ -41,21 +47,31 @@ export default function InputFile() {
       handleImageUpload({ target: { files: event.dataTransfer.files } });
     }
   };
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      Array.from(event.target.files).forEach(file => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const imageUrl = reader.result as string;
-          if (!images.includes(imageUrl)) {
-            setImages(prevImages => [...prevImages, imageUrl]);
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-  };
-  const handleImageUpload = (event) => {
+
+  function handleMouseEnter(index) {
+    setHoverStates(prevHoverStates => prevHoverStates.map((hoverState, i) => i === index ? true : hoverState));
+    console.log(hoverStates[index])
+  }
+
+  function handleMouseLeave() {
+    setHoverStates(prevHoverStates => prevHoverStates.map(() => false));
+  }
+
+  // const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (event.target.files) {
+  //     Array.from(event.target.files).forEach(file => {
+  //       const reader = new FileReader();
+  //       reader.onloadend = () => {
+  //         const imageUrl = reader.result as string;
+  //         if (!images.includes(imageUrl)) {
+  //           setImages(prevImages => [...prevImages, imageUrl]);
+  //         }
+  //       };
+  //       reader.readAsDataURL(file);
+  //     });
+  //   }
+  // };
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       Array.from(event.target.files).forEach(file => {
         const reader = new FileReader();
@@ -103,7 +119,15 @@ export default function InputFile() {
         reader.readAsDataURL(file);
       });
     }
+    event.target.value = null;
   };
+
+  function handleDelete(index: number) {
+    const deletedImage = imageData[index];
+    setImageData(prevImageData => prevImageData.filter((_, i) => i !== index));
+    setImages(prevImages => prevImages.filter(imageUrl => imageUrl !== deletedImage.url));
+  }
+
   const handleTranslate = async () => {
     console.log(images);
     let combinedText = '';
@@ -224,18 +248,38 @@ export default function InputFile() {
         <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4" style={{ border: 'transparent', width: '100%', height: '100%' }}>
           <div className="image-container" style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap' , width:"100%"}}>
             {imageData.map((data, index) => (
-              <Card key={index} style={{ flex: 1 }}>
+              <Card key={index} style={{ flex: 1, border: '1.5px solid #D3D3D3',     cursor: 'pointer'}}>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding:"10px" }}>
-                  <img src={data.url} alt={` ${index}`} style={{ width: '50px', height: '20px' }} />
-                </div>
-                <div style={{ marginLeft: '10px', width:"100%", padding:"10px", fontSize: '0.8em' }}>
-                <div style={{ fontWeight: 'bold',fontSize: '0.8em' }}>{data.details.name}</div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'gray',fontSize: '0.8em', padding:"3px" }}>
-                  <div>{data.details.size}</div>
-                  <div>{data.progress}%</div>
-                </div>
-                    <Progress value={data.progress} color="green" style={{ alignSelf: 'stretch', height: '5px' , width:"100%"}} />
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding:"10px" }}>
+                    <img src={data.url} alt={` ${index}`} style={{ width: '30px', height: '30px' }} />
+                  </div>
+                  <div style={{ marginLeft: '10px', width:"100%", padding:"10px", fontSize: '0.8em' }}>
+                        <div style={{ display: 'flex' }}>
+                          <div style={{ flex: '0 0 100%' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <div style={{ fontWeight: 'bold', fontSize: '0.8em' }}>{data.details.name}</div>
+                          <svg 
+                            onClick={() => handleDelete(index)}
+                            onMouseEnter={() => handleMouseEnter(index)}
+                            onMouseLeave={handleMouseLeave}
+                            className="w-5 h-5 text-gray-800 dark:text-white" 
+                            aria-hidden="true" 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            width="16" 
+                            height="16" 
+                            fill={hoverStates[index] ? "red" : "gray"} 
+                            viewBox="0 0 24 24" 
+                          >
+                            <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
+                          </svg>
+                        </div>                          
+                              <div style={{ display: 'flex', justifyContent: 'space-between', color: 'gray',fontSize: '0.8em', padding:"3px" }}>
+                              <div>{data.details.size}</div>
+                              <div>{data.progress}%</div>
+                            </div>
+                          </div>
+                        </div>
+                      <Progress value={data.progress} color="green" style={{ alignSelf: 'stretch', height: '5px' , width:"100%"}} />
                   </div>
                 </div>
               </Card>
