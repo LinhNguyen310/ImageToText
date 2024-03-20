@@ -192,7 +192,7 @@ export default function InputFile() {
 
   const handleTranslate = async () => {
     setIsLoading(true);
-  
+    console.log("test translate")
     const fetchPromises = images.map(async (imageUrl, index) => {
       // Convert the data URL to a Blob
       const response = await fetch(imageUrl);
@@ -208,11 +208,13 @@ export default function InputFile() {
       console.log(file.name)
       formData.append('mimetype', file.type);
       formData.append('filename', file.name);
+      console.log(formData)
       try{
         const uploadResponse = await fetch('/api/upload', {
           method: 'POST',
           body: formData,
         });
+        console.log(uploadResponse)
         if (uploadResponse.ok) {
           console.log('Uploaded successfully!');
           const responseJson = await uploadResponse.json();
