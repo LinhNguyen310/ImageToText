@@ -266,9 +266,10 @@ export default function InputFile() {
             </Card>
             </label>
           </div>
-          <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4" style={{ border: 'transparent', width: '100%', height: '100%' }}>
-            <div className="image-container" style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap' , width:"100%"}}>
+          <div style={{ flex: 1, display: 'flex',flexDirection:"column", justifyContent: 'center', alignItems: 'center' }}>
+          <p style={{ fontWeight: 'bold', fontSize: '14px',padding:"10px" }}>Uploaded Files</p>
+          <ScrollArea className=" w-[350px] rounded-md border" style={{ border: 'transparent', width: '100%', height: '300px' }}>
+            <div className="image-container" style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap' , width:"100%", height:"100%"}}>
               {imageData.map((data, index) => (
               <Card
               draggable="true"
