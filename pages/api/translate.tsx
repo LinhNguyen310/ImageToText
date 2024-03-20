@@ -1,22 +1,42 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-const vision = require('@google-cloud/vision');
-const client = new vision.ImageAnnotatorClient();
+import fetch from 'node-fetch';
 
 export default async function(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
         try {
             if (req.body) {
-                const imageUrl = req.body // Change this line
-                const vision = require('@google-cloud/vision');
+                const imageUrl = req.body; // Change this line
+                const API_KEY = process.env.GCV_API_KEY;
+                const ENDPOINT = `https://vision.googleapis.com/v1/images:annotate?key=${API_KEY}`;
 
-                const client = new vision.ImageAnnotatorClient();
-                
-                // Performs text detection on the gcs file
-                
-                const [result] = await client.textDetection(imageUrl.imageUrl);
-                const detections = result.textAnnotations;
-                const fullText = result.fullTextAnnotation;
-                res.status(200).json({text:detections, fullText})
+                const request = {
+                    requests: [
+                        {
+                            image: {
+                                source: {
+                                    imageUri: imageUrl.imageUrl
+                                }
+                            },
+                            features: [
+                                {
+                                    type: 'TEXT_DETECTION'
+                                }
+                            ]
+                        }
+                    ]
+                };
+
+                const visionRes = await fetch(ENDPOINT, {
+                    method: 'POST',
+                    body: JSON.stringify(request),
+                    headers: { 'Content-Type': 'application/json' },
+                });
+
+                const result = await visionRes.json();
+                const detections = result.responses[0].textAnnotations;
+                const fullText = result.responses[0].fullTextAnnotation;
+
+                res.status(200).json({text:detections, fullText});
             }
 
         } catch (error) {
