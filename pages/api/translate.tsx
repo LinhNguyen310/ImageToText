@@ -1,6 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import fetch from 'node-fetch';
-import { request } from 'http';
 const vision = require('@google-cloud/vision');
 const client = new vision.ImageAnnotatorClient();
 

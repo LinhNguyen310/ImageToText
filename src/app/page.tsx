@@ -208,6 +208,15 @@ export default function InputFile() {
       console.log(file.name)
       formData.append('mimetype', file.type);
       formData.append('filename', file.name);
+      try{
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+    
+      } catch (error) {
+        console.error('Upload failed:', error);
+      }
       const uploadResponse = await fetch('/api/upload', {
         method: 'POST',
         body: formData,

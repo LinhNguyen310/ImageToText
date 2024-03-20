@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             private_key: process.env.GCP_PRIVATE_KEY?.replace(/\\n/g, '\n') || '',
         },
     });
-
+    
     const bucket = gcs.bucket(process.env.BUCKET_NAME || '');
     const multerRequest = req as MulterRequest;
 
