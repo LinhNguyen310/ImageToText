@@ -1,4 +1,4 @@
-"use client";
+"use server";
 import multer from 'multer';
 import { Storage } from '@google-cloud/storage';
 import { NextApiRequest, NextApiResponse } from 'next';
