@@ -1,5 +1,7 @@
 import multer from 'multer';
 import { Storage } from '@google-cloud/storage';
+import { Request, ParamsDictionary, Response } from 'express-serve-static-core';
+import { ParsedQs } from 'qs';
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -9,21 +11,21 @@ export const config = {
   },
 };
 
-export default async function handler(req, res) {
+export default async function handler(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>, number>) {
     const gcs = new Storage({
-      projectId: process.env.GCP_PROJECT_ID,
-      credentials: {
-        client_email: process.env.GCP_CLIENT_EMAIL,
-        private_key: process.env.GCP_PRIVATE_KEY.replace(/\\n/g, '\n'),
-      },
+        projectId: process.env.GCP_PROJECT_ID,
+        credentials: {
+            client_email: process.env.GCP_CLIENT_EMAIL,
+            private_key: process.env.GCP_PRIVATE_KEY?.replace(/\\n/g, '\n') || '',
+        },
     });
 
-    const bucket = gcs.bucket(process.env.BUCKET_NAME);
+    const bucketName = process.env.BUCKET_NAME || ''; // Assign a default value if process.env.BUCKET_NAME is undefined
+    const bucket = gcs.bucket(bucketName);
 
     upload.single('file')(req, res, (err) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ error: err.message });
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
         }
 
         const fileName = req.file.originalname;
