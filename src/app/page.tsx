@@ -10,33 +10,46 @@ import {
   CardContent,
 } from "@/components/ui/card"
 export default function InputFile() {
-  const [images, setImages] = React.useState([]);
+  const [images, setImages] = useState<string[]>([]);
   const [previewText, setPreviewText] = useState<string>('');
-  const [imageData, setImageData] = useState([]);
+  const [imageData, setImageData] = useState<ImageData[]>([]);
   const fileInputRef = useRef(null);
-  const [hoverStates, setHoverStates] = useState([]);
+  const [hoverStates, setHoverStates] = useState<boolean[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isTranslationDone, setIsTranslationDone] = useState(false);
   const [items, setItems] = useState([]);
-
+  interface ImageDetails {
+    timeLeft: string;
+    size: string;
+    name: string;
+    // other properties...
+  }
+  
+  interface ImageData {
+    url: string;
+    progress: number;
+    details: ImageDetails;
+    size: string;
+    // other properties...
+  }
   useEffect(() => {
-    setHoverStates(new Array(imageData.length).fill(false));
+    setHoverStates(new Array<boolean>(imageData.length).fill(false));
   }, [imageData]);
   const [draggingIndex, setDraggingIndex] = useState(-1);
 
-  const handleDragStart = (event, index) => {
-    event.dataTransfer.setData('text/plain', index);
+  const handleDragStart = (event: React.DragEvent<HTMLDivElement>, index: number): void => {
+    event.dataTransfer.setData('text/plain', index.toString());
     setDraggingIndex(index);
   };
 
-  const handleDragOverImage = (event, index) => {
+  const handleDragOverImage = (event: React.DragEvent<HTMLDivElement>, index: number): void => {
     event.preventDefault();
 
     if (draggingIndex === index) {
       return;
     }
 
-    const items = Array.from(imageData);
+    const items: ImageData[] = Array.from(imageData);
     const [draggingItem] = items.splice(draggingIndex, 1);
     items.splice(index, 0, draggingItem);
 
@@ -64,34 +77,61 @@ export default function InputFile() {
     event.preventDefault();
   };
   
-  const handleDrop = (event) => {
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    if (event.dataTransfer.items && event.dataTransfer.items.length > 0) {
-      handleImageUpload({ target: { files: event.dataTransfer.files } });
-      // Convert FileList to Array and map to their URLs
-      const droppedImages = Array.from(event.dataTransfer.files).map(file =>
-        URL.createObjectURL(file)
-      );
-      console.log(droppedImages)
-      // Create new image data objects
-      const newImageData = droppedImages.map(url => ({ url }));
-      // Update the images and imageData states
-      setImages(prevImages => [...prevImages, ...droppedImages]);
-      setImageData(prevImageData => [...prevImageData, ...newImageData]);
+    if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+      Array.from(event.dataTransfer.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          console.log("hehehe")
+          const imageUrl = reader.result as string;
+          console.log(imageUrl)
+          if (!images.includes(imageUrl)) {
+            setImages(prevImages => [...prevImages, imageUrl]);
+  
+            const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2); // size in MB
+            const newImageData = {
+              url: imageUrl,
+              details: { name: file.name, size: `${fileSizeMB} MB`, timeLeft: 'Calculating...' },
+              progress: 0,
+              size: `${fileSizeMB} MB`,
+            };
+            setImageData(prevData => [...prevData, newImageData]);
+            let progress = 0;
+            const increment = () => {
+              progress = progress + 1;
+              setImageData(prevData =>
+                prevData.map(data =>
+                  data.url === imageUrl
+                    ? {
+                        ...data,
+                        progress: progress > 100 ? 100 : progress,
+                        details: {
+                          ...data.details,
+                          timeLeft: progress >= 100 ? 'Done' : data.details.timeLeft,
+                        },
+                      }
+                    : data
+                )
+              );
+              if (progress < 100) {
+                setTimeout(increment, 10);
+              }
+            };
+            increment();
+          }
+        };
+        reader.readAsDataURL(file); // start reading the file
+      });
     }
   };
-  // Listen for changes in the images state
-  useEffect(() => {
-    console.log(images);
-  }, [images]);
-
   function handleDelete(index: number) {
     const deletedImage = imageData[index];
     setImageData(prevImageData => prevImageData.filter((_, i) => i !== index));
     setImages(prevImages => prevImages.filter(imageUrl => imageUrl !== deletedImage.url));
   }
 
-  function handleMouseEnter(index) {
+  function handleMouseEnter(index: number): void {
     setHoverStates(prevHoverStates => prevHoverStates.map((hoverState, i) => i === index ? true : hoverState));
     console.log(hoverStates[index])
   }
@@ -106,20 +146,18 @@ export default function InputFile() {
         const reader = new FileReader();
         reader.onloadend = () => {
           const imageUrl = reader.result as string;
+          console.log(imageUrl)
           if (!images.includes(imageUrl)) {
             setImages(prevImages => [...prevImages, imageUrl]);
   
             const fileSize = (file.size / (1024 * 1024)).toFixed(2); // size in MB
-  
-            // Create a new image data object
             const newImageData = {
               url: imageUrl,
               details: { name: file.name, size: `${fileSize} MB`, timeLeft: 'Calculating...' },
               progress: 0,
+              size: `${fileSize} MB`, // add size property here
             };
-  
-            setImageData(prevData => [...prevData, newImageData]);
-  
+            setImageData(prevData => [...prevData, newImageData]);  
             // Simulate image upload
             let progress = 0;
             const increment = () => {
@@ -148,14 +186,12 @@ export default function InputFile() {
         reader.readAsDataURL(file);
       });
     }
-    event.target.value = null;
+    event.target.value = '';
   };
 
 
   const handleTranslate = async () => {
     setIsLoading(true);
-
-    let combinedText = '';
   
     const fetchPromises = images.map(async (imageUrl, index) => {
       // Convert the data URL to a Blob
@@ -254,7 +290,7 @@ export default function InputFile() {
                 />
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40%', padding:"10px" }}>
-                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style={{ width: '20%', height: 'auto' }} fill="none" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style={{ width: '20%', height: 'auto' }} fill="none" viewBox="0 0 24 24">
                       <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v9m-5 0H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2M8 9l4-5 4 5m1 8h.01"/>
                     </svg>
                   </div>
