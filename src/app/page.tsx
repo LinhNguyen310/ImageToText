@@ -23,11 +23,34 @@ export default function InputFile() {
   const [imageData, setImageData] = useState([]);
   const fileInputRef = useRef(null);
   const [hoverStates, setHoverStates] = useState([]);
-
   useEffect(() => {
     setHoverStates(new Array(imageData.length).fill(false));
   }, [imageData]);
-  
+  const [draggingIndex, setDraggingIndex] = useState(-1);
+
+  const handleDragStart = (event, index) => {
+    event.dataTransfer.setData('text/plain', index);
+    setDraggingIndex(index);
+  };
+
+  const handleDragOverImage = (event, index) => {
+    event.preventDefault();
+
+    if (draggingIndex === index) {
+      return;
+    }
+
+    const items = Array.from(imageData);
+    const [draggingItem] = items.splice(draggingIndex, 1);
+    items.splice(index, 0, draggingItem);
+
+    setDraggingIndex(index);
+    setImageData(items);
+  };
+
+const handleDragEnd = () => {
+  setDraggingIndex(-1);
+};
   const handleDownload = () => {
     const blob = new Blob([previewText], {type: "text/plain;charset=utf-8"});
     saveAs(blob, "output.doc");
@@ -248,7 +271,19 @@ export default function InputFile() {
         <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4" style={{ border: 'transparent', width: '100%', height: '100%' }}>
           <div className="image-container" style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap' , width:"100%"}}>
             {imageData.map((data, index) => (
-              <Card key={index} style={{ flex: 1, border: '1.5px solid #D3D3D3',     cursor: 'pointer'}}>
+            <Card
+            draggable="true"
+            onDragStart={(event) => handleDragStart(event, index)}
+            onDragOver={(event) => handleDragOverImage(event, index)}
+            onDragEnd={handleDragEnd}
+            key={index}
+            style={{
+              flex: 1,
+              border: '1.5px solid #D3D3D3',
+              cursor: 'pointer',
+              opacity: draggingIndex === index ? 0.5 : 1,
+            }}
+          >
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding:"10px" }}>
                     <img src={data.url} alt={` ${index}`} style={{ width: '30px', height: '30px' }} />
