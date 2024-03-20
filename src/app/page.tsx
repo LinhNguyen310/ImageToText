@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Input } from "../../components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -21,12 +21,26 @@ export default function InputFile() {
   const [images, setImages] = React.useState([]);
   const [previewText, setPreviewText] = useState<string>('');
   const [imageData, setImageData] = useState([]);
+  const fileInputRef = useRef(null);
 
   const handleDownload = () => {
     const blob = new Blob([previewText], {type: "text/plain;charset=utf-8"});
     saveAs(blob, "output.doc");
   };
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
   
+  const handleDragEnter = (event) => {
+    event.preventDefault();
+  };
+  
+  const handleDrop = (event) => {
+    event.preventDefault();
+    if (event.dataTransfer.items && event.dataTransfer.items.length > 0) {
+      handleImageUpload({ target: { files: event.dataTransfer.files } });
+    }
+  };
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       Array.from(event.target.files).forEach(file => {
@@ -41,7 +55,6 @@ export default function InputFile() {
       });
     }
   };
-
   const handleImageUpload = (event) => {
     if (event.target.files) {
       Array.from(event.target.files).forEach(file => {
@@ -163,14 +176,35 @@ export default function InputFile() {
     //   <textarea value={previewText} readOnly style={{ width: '500px', height: '200px' }} /> 
     //   <Button onClick={handleDownload}>Download as Doc</Button>
     //   </div>
-  <div style={{ width: '100%', height: '100%', padding: "10px", fontFamily:"Verdana, sans-serif" }}>
-    <Card style={{ width: '100%', height: '100%'}}>
-      <CardContent style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
+    <div style={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      width: '100%', 
+      height: '100vh', 
+      padding: "10px", 
+      fontFamily:"Verdana, sans-serif" 
+    }}>
+      <Card style={{ width: '100%', height: '50%'}}>
+      <CardContent style={{ display: 'flex', flexDirection: 'row', gap: '10px', height:"100%" }}>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
           <p style={{padding: "10px" }}></p>
-          <input id="picture" type="file" accept="image/*" name="file" onChange={handleImageUpload} multiple style={{ display: 'none' }} />
-          <label htmlFor="picture" style={{ width: '100%', height: '100%', cursor: 'pointer' }}>
-          <Card style={{ border: '1px dashed #000', width: '100%', height: '100%', backgroundColor: 'rgb(250, 250, 250)' }}>
+         <label htmlFor="picture" style={{ width: '100%', height: '100%', cursor: 'pointer' }}>
+          <Card             
+            onDragOver={handleDragOver}
+            onDragEnter={handleDragEnter}
+            onDrop={handleDrop}
+             style={{ border: '1px dashed #000', width: '100%', height: '100%', backgroundColor: 'rgb(250, 250, 250)' }}>
+              <input
+                ref={fileInputRef}
+                id="picture"
+                type="file"
+                accept="image/*"
+                name="file"
+                onChange={handleImageUpload}
+                multiple
+                style={{ display: 'none' }}
+              />
             <CardContent style={{ display: 'flex', flexDirection: 'row' }}>
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40%', padding:"10px" }}>
@@ -178,12 +212,12 @@ export default function InputFile() {
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v9m-5 0H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2M8 9l4-5 4 5m1 8h.01"/>
               </svg>
             </div>
-            <p style={{ textAlign: 'center' }}>Upload your image</p>
+            <p style={{ textAlign: 'center' }}>            Drag and drop files here or click to select files</p>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60%' }}>
             </div>
           </div>
               </CardContent>
-            </Card>
+          </Card>
           </label>
         </div>
         <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -211,9 +245,7 @@ export default function InputFile() {
        </div>
       </CardContent>
     </Card>
-    <Button onClick={handleTranslate}>Translate Images</Button>
-  <Label>Preview Text Test:</Label>
-  <textarea value={previewText} readOnly style={{ width: '500px', height: '200px' }} /> 
+
   </div>
   )
 }
