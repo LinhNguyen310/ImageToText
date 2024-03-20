@@ -24,6 +24,14 @@ export default async function handler(req: Request<ParamsDictionary, any, any, P
     const bucket = gcs.bucket(bucketName);
 
     upload.single('file')(req, res, (err) => {
+        if (err) {
+            console.error(err);
+            console.log(bucketName)
+            console.log("key : ", process.env.GCP_PRIVATE_KEY?.replace(/\\n/g, '\n') || '')
+            console.log(req.file?.filename)
+            return res.status(500).json({ error: err.message });
+        }
+    
         if (!req.file) {
             return res.status(400).json({ error: 'No file uploaded' });
         }
