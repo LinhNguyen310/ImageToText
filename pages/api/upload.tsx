@@ -17,7 +17,7 @@ const cors = initMiddleware(
   )
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     await cors(req, res);
-
+    console.log(req.body)
     const gcs = new Storage({
         projectId: process.env.GCP_PROJECT_ID,
         credentials: {

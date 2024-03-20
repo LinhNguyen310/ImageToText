@@ -14,7 +14,7 @@ const cors = initMiddleware(
   )
 export default async function(req: NextApiRequest, res: NextApiResponse) {
     await cors(req, res);
-
+    console.log(req.body)
     if (req.method === 'POST') {
         try {
             if (req.body) {
@@ -38,7 +38,6 @@ export default async function(req: NextApiRequest, res: NextApiResponse) {
                         }
                     ]
                 };
-
                 const visionRes = await fetch(ENDPOINT, {
                     method: 'POST',
                     body: JSON.stringify(request),
