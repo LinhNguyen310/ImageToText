@@ -274,286 +274,297 @@ export default function InputFile() {
     setIsTranslationDone(true);
   };
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        width: "100%",
-        height: "100vh",
-        padding: "10px",
-        fontFamily: "Verdana, sans-serif",
-      }}
-    >
+    <div className="p-10 flex flex-col gap-10 max-h-screen">
       <div
         style={{
-          width: "100%",
           display: "flex",
-          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
+          height: "100vh",
           padding: "10px",
-          gap: "10px",
+          fontFamily: "Verdana, sans-serif",
         }}
       >
-        <Card style={{ width: "100%", height: "50%" }}>
-          <CardContent
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: "10px",
-              height: "100%",
-            }}
-          >
-            <div
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            padding: "10px",
+            gap: "10px",
+          }}
+        >
+          <Card style={{ width: "100%", height: "50%" }}>
+            <CardContent
               style={{
-                flex: 1,
                 display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
+                flexDirection: "row",
+                gap: "10px",
+                height: "100%",
               }}
             >
-              <p style={{ padding: "10px" }}></p>
-              <label
-                htmlFor="picture"
-                style={{ width: "100%", height: "100%", cursor: "pointer" }}
+              <div
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                <Card
-                  onDragOver={handleDragOver}
-                  onDragEnter={handleDragEnter}
-                  onDrop={handleDrop}
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    border: "1px dashed #000",
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "rgb(250, 250, 250)",
-                  }}
+                <p style={{ padding: "10px" }}></p>
+                <label
+                  htmlFor="picture"
+                  style={{ width: "100%", height: "100%", cursor: "pointer" }}
                 >
-                  <CardContent
+                  <Card
+                    onDragOver={handleDragOver}
+                    onDragEnter={handleDragEnter}
+                    onDrop={handleDrop}
                     style={{
                       display: "flex",
-                      flexDirection: "column",
                       justifyContent: "center",
                       alignItems: "center",
+                      border: "1px dashed #000",
+                      width: "100%",
                       height: "100%",
-                      paddingTop: "25%",
+                      backgroundColor: "rgb(250, 250, 250)",
                     }}
                   >
-                    <input
-                      ref={fileInputRef}
-                      id="picture"
-                      type="file"
-                      accept="image/*"
-                      name="file"
-                      onChange={handleImageUpload}
-                      multiple
-                      style={{ display: "none" }}
-                    />
-                    <div
+                    <CardContent
                       style={{
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "center",
                         alignItems: "center",
                         height: "100%",
+                        paddingTop: "25%",
                       }}
                     >
+                      <input
+                        ref={fileInputRef}
+                        id="picture"
+                        type="file"
+                        accept="image/*"
+                        name="file"
+                        onChange={handleImageUpload}
+                        multiple
+                        style={{ display: "none" }}
+                      />
                       <div
                         style={{
                           display: "flex",
+                          flexDirection: "column",
                           justifyContent: "center",
                           alignItems: "center",
-                          height: "40%",
-                          padding: "10px",
+                          height: "100%",
                         }}
                       >
-                        <svg
-                          className="w-6 h-6 text-gray-800 dark:text-white"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          style={{ width: "20%", height: "auto" }}
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M12 5v9m-5 0H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2M8 9l4-5 4 5m1 8h.01"
-                          />
-                        </svg>
-                      </div>
-                      <p style={{ textAlign: "center", paddingTop: "10%" }}>
-                        Drag and drop files here or click to select files
-                      </p>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          height: "60%",
-                        }}
-                      ></div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </label>
-            </div>
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "14px",
-                  padding: "10px",
-                }}
-              >
-                Uploaded Files
-              </p>
-              <ScrollArea
-                className=" w-[350px] rounded-md border"
-                style={{
-                  border: "transparent",
-                  width: "100%",
-                  height: "300px",
-                }}
-              >
-                <div
-                  className="image-container"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    flexWrap: "wrap",
-                    width: "100%",
-                    height: "100%",
-                  }}
-                >
-                  {imageData.map((data, index) => (
-                    <Card
-                      draggable="true"
-                      onDragStart={(event) => handleDragStart(event, index)}
-                      onDragOver={(event) => handleDragOverImage(event, index)}
-                      onDragEnd={handleDragEnd}
-                      key={index}
-                      style={{
-                        flex: 1,
-                        border: "1.5px solid #D3D3D3",
-                        cursor: "pointer",
-                        opacity: draggingIndex === index ? 0.5 : 1,
-                      }}
-                    >
-                      <div style={{ display: "flex", flexDirection: "row" }}>
                         <div
                           style={{
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
+                            height: "40%",
                             padding: "10px",
                           }}
                         >
-                          <img
-                            src={data.url}
-                            alt={` ${index}`}
-                            style={{ width: "30px", height: "30px" }}
-                          />
+                          <svg
+                            className="w-6 h-6 text-gray-800 dark:text-white"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style={{ width: "20%", height: "auto" }}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M12 5v9m-5 0H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2M8 9l4-5 4 5m1 8h.01"
+                            />
+                          </svg>
                         </div>
+                        <p style={{ textAlign: "center", paddingTop: "10%" }}>
+                          Drag and drop files here or click to select files
+                        </p>
                         <div
                           style={{
-                            marginLeft: "10px",
-                            width: "100%",
-                            padding: "10px",
-                            fontSize: "0.8em",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "60%",
                           }}
-                        >
-                          <div style={{ display: "flex" }}>
-                            <div style={{ flex: "0 0 100%" }}>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                }}
-                              >
+                        ></div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </label>
+              </div>
+              <div
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <p
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                    padding: "10px",
+                  }}
+                >
+                  Uploaded Files
+                </p>
+                <ScrollArea
+                  className=" w-[350px] rounded-md border"
+                  style={{
+                    border: "transparent",
+                    width: "100%",
+                    height: "300px",
+                  }}
+                >
+                  <div
+                    className="image-container"
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      flexWrap: "wrap",
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  >
+                    {imageData.map((data, index) => (
+                      <Card
+                        draggable="true"
+                        onDragStart={(event) => handleDragStart(event, index)}
+                        onDragOver={(event) =>
+                          handleDragOverImage(event, index)
+                        }
+                        onDragEnd={handleDragEnd}
+                        key={index}
+                        style={{
+                          flex: 1,
+                          border: "1.5px solid #D3D3D3",
+                          cursor: "pointer",
+                          opacity: draggingIndex === index ? 0.5 : 1,
+                        }}
+                      >
+                        <div style={{ display: "flex", flexDirection: "row" }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              padding: "10px",
+                            }}
+                          >
+                            <img
+                              src={data.url}
+                              alt={` ${index}`}
+                              style={{ width: "30px", height: "30px" }}
+                            />
+                          </div>
+                          <div
+                            style={{
+                              marginLeft: "10px",
+                              width: "100%",
+                              padding: "10px",
+                              fontSize: "0.8em",
+                            }}
+                          >
+                            <div style={{ display: "flex" }}>
+                              <div style={{ flex: "0 0 100%" }}>
                                 <div
                                   style={{
-                                    fontWeight: "bold",
-                                    fontSize: "0.8em",
+                                    display: "flex",
+                                    justifyContent: "space-between",
                                   }}
                                 >
-                                  {data.details.name}
+                                  <div
+                                    style={{
+                                      fontWeight: "bold",
+                                      fontSize: "0.8em",
+                                    }}
+                                  >
+                                    {data.details.name}
+                                  </div>
+                                  <svg
+                                    onClick={() => handleDelete(index)}
+                                    onMouseEnter={() => handleMouseEnter(index)}
+                                    onMouseLeave={handleMouseLeave}
+                                    className="w-5 h-5 text-gray-800 dark:text-white"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill={hoverStates[index] ? "red" : "gray"}
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
                                 </div>
-                                <svg
-                                  onClick={() => handleDelete(index)}
-                                  onMouseEnter={() => handleMouseEnter(index)}
-                                  onMouseLeave={handleMouseLeave}
-                                  className="w-5 h-5 text-gray-800 dark:text-white"
-                                  aria-hidden="true"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  fill={hoverStates[index] ? "red" : "gray"}
-                                  viewBox="0 0 24 24"
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    color: "gray",
+                                    fontSize: "0.8em",
+                                    padding: "3px",
+                                  }}
                                 >
-                                  <path
-                                    fill-rule="evenodd"
-                                    d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
-                                    clip-rule="evenodd"
-                                  />
-                                </svg>
-                              </div>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  color: "gray",
-                                  fontSize: "0.8em",
-                                  padding: "3px",
-                                }}
-                              >
-                                <div>{data.details.size}</div>
-                                <div>{data.progress}%</div>
+                                  <div>{data.details.size}</div>
+                                  <div>{data.progress}%</div>
+                                </div>
                               </div>
                             </div>
+                            <Progress
+                              value={data.progress}
+                              color="green"
+                              style={{
+                                alignSelf: "stretch",
+                                height: "5px",
+                                width: "100%",
+                              }}
+                            />
                           </div>
-                          <Progress
-                            value={data.progress}
-                            color="green"
-                            style={{
-                              alignSelf: "stretch",
-                              height: "5px",
-                              width: "100%",
-                            }}
-                          />
                         </div>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </ScrollArea>
-            </div>
-          </CardContent>
-        </Card>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button onClick={handleTranslate}>Convert Images</Button>
-          <PreviewModal
-            isOpen={isLoading || isTranslationDone}
-            onClose={() => {
-              setPreviewText("");
-              setIsTranslationDone(false);
-            }}
-            previewText={previewText}
-            isLoading={isLoading}
-          />
+                      </Card>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </div>
+            </CardContent>
+          </Card>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button onClick={handleTranslate}>Convert Images</Button>
+            <PreviewModal
+              isOpen={isLoading || isTranslationDone}
+              onClose={() => {
+                setPreviewText("");
+                setIsTranslationDone(false);
+              }}
+              previewText={previewText}
+              isLoading={isLoading}
+            />
+          </div>
         </div>
       </div>
+      <p className="text-gray-500 text-sm">
+        By submitting this form, you agree to our{" "}
+        <a href="/hidden" className="text-primary underline">
+          terms and conditions
+        </a>
+        .
+      </p>
     </div>
   );
 }
