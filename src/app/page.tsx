@@ -542,7 +542,7 @@ export default function InputFile() {
           </CardContent>
         </Card>
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button onClick={handleTranslate}>Translate Images</Button>
+          <Button onClick={handleTranslate}>Convert Images</Button>
           <PreviewModal
             isOpen={isLoading || isTranslationDone}
             onClose={() => {
