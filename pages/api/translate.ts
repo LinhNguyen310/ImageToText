@@ -12,7 +12,10 @@ const cors = initMiddleware(
     methods: ["POST", "OPTIONS"],
   })
 );
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   await cors(req, res);
   console.log(req.body);
   if (req.method === "POST") {
