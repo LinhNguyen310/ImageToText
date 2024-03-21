@@ -63,7 +63,8 @@ const page = (props: Props) => {
             </Button>
           </div>
           <Label className="text-red-500 font-mono" htmlFor="password">
-            {typedPassword.length > 0 && "WRONG PASSWORD! TRY AGAIN!"}
+            {CryptoJS.SHA256(typedPassword).toString().length > 0 &&
+              "WRONG PASSWORD! TRY AGAIN!"}
           </Label>
         </div>
       )}
