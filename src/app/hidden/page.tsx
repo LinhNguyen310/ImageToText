@@ -7,7 +7,7 @@ import CryptoJS from "crypto-js";
 
 type Props = {};
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   const passwordHash =
     "16955b0cd729017d6de042b663d9b85648e9ad513dc7d01cbb839ea986940f36";
 
@@ -72,4 +72,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;
